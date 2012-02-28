@@ -50,7 +50,7 @@ DESCRIPTION
     Run the "mite_shim" program to generate the shim. Tell it the name you
     want to give to the shim. Put it into your lib directory.
 
-        mite_shim("Foo::Mite") > lib/Foo/Mite.pm
+        mite_shim "Foo::Mite" > lib/Foo/Mite.pm
 
    3. Develop normally
     Mite will detect when your code has changed and recompile itself. It
