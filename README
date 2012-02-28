@@ -17,11 +17,11 @@ SYNOPSIS
         has "attribute";
 
         # A read-only integer attribute with a default
-        has "another_attribute" => {
+        has "another_attribute" => (
             is      => 'ro',
             type    => 'Int',
             default => 1
-        };
+        );
 
 DESCRIPTION
     Moose and Mouse are great... unless you can't have any dependencies or
