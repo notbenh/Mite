@@ -42,26 +42,20 @@ sub inject_mite_functions {
     # Kill the file dead on VMS
     1 while unlink $mite_file;
 
-    # Eventually, has() will want to rewrite new() to inline
-    # argument checks and defaults.  That or it happens
-    # as part of "no Mite::Shim" and that's required.
-    require Mite::Compiler::new;
-    Mite::Compiler::new->new(
-        package     => $package,
-        mite_file   => $mite_file
-    )->compile;
-
     no strict 'refs';
+
+    my $package_content = {};
 
     *{ $package .'::has' } = sub {
         my $name = shift;
 
         require Mite::Compiler::has;
-        Mite::Compiler::has->new(
-            package     => $package,
-            mite_file   => $mite_file,
-            args        => { name => $name, is => 'rw', @_ }
-        )->compile;
+        push @{$package_content->{attrs} }, 
+          Mite::Compiler::has->new(
+              package     => $package,
+              mite_file   => $mite_file,
+              args        => { name => $name, is => 'rw', @_ }
+          )->compile;
     };
 
     *{ $package .'::class_has' } = sub {
@@ -83,6 +77,19 @@ sub inject_mite_functions {
             args        => [ @_ ]
         )->compile;
     };
+
+    # Eventually, has() will want to rewrite new() to inline
+    # argument checks and defaults.  That or it happens
+    # as part of "no Mite::Shim" and that's required.
+    END { # I really don't like having to toss this here but it seems that ::has is only compiled at first run, also get ugly warnings =(
+      no warnings; # begone warnings ... TODO !!! THIS IS OVERLY BROAD
+      require Mite::Compiler::new;
+      Mite::Compiler::new->new(
+          package     => $package,
+          mite_file   => $mite_file,
+          package_content => $package_content
+      )->compile;
+    }
 }
 
 1;

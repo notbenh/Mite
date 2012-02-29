@@ -21,7 +21,7 @@ sub compile {
 
     $self->save_code(\$code);
 
-    return;
+    return $self->args;
 }
 
 
