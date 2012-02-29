@@ -1,0 +1,20 @@
+class Some::Thing => sub{
+  has somenum => ( is => 'ro'
+                 , isa => 'Int'
+                 , default => 10
+                 );
+  has somestr => ( is => 'rw',
+                 , isa => 'Str',
+                 , default => 'hello'
+                 );
+  has someval => ( isa => 'Some::Thing'
+                 , default => sub{ require Some::Thing;
+                                   Some::Thing->new();
+                                 }
+                 );
+
+  #method zoink => sub{
+  #  # as we're doing this all on our own, why not supply $self = shift? 
+  #  return 'ZOINK!', @_;
+  #}
+};
