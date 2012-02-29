@@ -9,7 +9,6 @@ sub compile {
     my $self = shift;
 
     my $args = $self->args;
-
     my $code;
     if( $args->{is} eq 'rw' ) {
         $code = $self->_rw;
@@ -17,6 +16,9 @@ sub compile {
     else {
         $code = $self->_ro;
     }
+
+    die "defaults only take coderefs" if ref($args->{default}) && ref($args->{default}) ne 'CODE';
+
     $self->save_code(\$code);
 
     return;
